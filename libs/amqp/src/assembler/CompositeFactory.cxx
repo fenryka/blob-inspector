@@ -159,23 +159,33 @@ CompositeFactory::processComposite (
 
         decltype (m_serialisersByType)::mapped_type serialiser;
 
-        if (field->primitive()) {
-            serialiser = computeIfAbsent<amqp::serialiser::ISerialiser> (
-                    m_serialisersByType,
-                    field->resolvedType(),
-                    [&field]() -> sPtr<amqp::serialiser::ISerialiser> {
-                        return g_sf.makePropertyReader (field->type());
-                    });
-        } else if (field->resolvedType() == type_.name()) {
-            // Special case where a composite type has a property that
-            // is a reference to that type itself.
-            DBG ("IT ME!!!!" << std::endl);
-            serialiser = rtn;
+        switch (field->AMQPType()) {
+            case schema::Field::Type::primitive_t : {
+                DBG ("    Field " << field->name() << "[" << field->type() << "] is primitive" << std::endl);
+                serialiser = computeIfAbsent<amqp::serialiser::ISerialiser> (
+                        m_serialisersByType,
+                        field->resolvedType(),
+                        [&field]() -> sPtr<amqp::serialiser::ISerialiser> {
+                            return g_sf.makePropertyReader (field->type());
+                        });
+                break;
+            }
+            case schema::Field::Type::custom_t : {
+                break;
+            }
+            default : {
+                if (field->resolvedType() == type_.name()) {
+                    // Special case where a composite type has a property that
+                    // is a reference to that type itself.
+                    DBG ("IT ME!!!!" << std::endl);
+                    serialiser = rtn;
 
-        } else {
-            // Insertion sorting ensures any type we depend on will have
-            // already been created and thus exist in the map
-            serialiser = m_serialisersByType[field->resolvedType()];
+                } else {
+                    // Insertion sorting ensures any type we depend on will have
+                    // already been created and thus exist in the map
+                    serialiser = m_serialisersByType[field->resolvedType()];
+                }
+            }
         }
 
         if (!serialiser) {

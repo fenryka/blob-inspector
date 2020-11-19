@@ -36,10 +36,10 @@ CompositeField::CompositeField (
 
 /******************************************************************************/
 
-bool
+amqp::internal::schema::Field::Type
 amqp::internal::schema::
-CompositeField::primitive() const {
-    return false;
+CompositeField::AMQPType() const {
+    return composite_t;
 }
 
 /******************************************************************************/

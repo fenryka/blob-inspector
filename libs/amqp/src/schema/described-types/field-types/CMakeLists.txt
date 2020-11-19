@@ -5,4 +5,7 @@ target_sources(${libName}
         CompositeField.cxx
         RestrictedField.cxx
         ArrayField.cxx
+        CustomField.cxx
+    PUBLIC
+        Field.h
 )

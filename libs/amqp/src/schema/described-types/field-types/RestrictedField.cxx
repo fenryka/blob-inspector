@@ -31,10 +31,10 @@ RestrictedField::RestrictedField (
 
 /******************************************************************************/
 
-bool
+amqp::internal::schema::Field::Type
 amqp::internal::schema::
-RestrictedField::primitive() const {
-    return false;
+RestrictedField::AMQPType() const {
+    return restricted_t;
 }
 
 /******************************************************************************/

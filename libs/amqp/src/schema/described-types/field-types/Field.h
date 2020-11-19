@@ -16,7 +16,7 @@ namespace amqp::internal::schema {
 
     /**
      *
-     * A Corda AMQP Scehma Field type has:
+     * A Corda AMQP Schema Field type has:
      *   - name      : String
      *   - type      : String
      *   - requires  : List<String>
@@ -35,7 +35,9 @@ namespace amqp::internal::schema {
                 std::string, std::string, std::list<std::string>,
                 std::string, std::string, bool, bool);
 
-        private :
+            enum Type { composite_t, restricted_t, primitive_t, custom_t };
+
+    private :
             std::string            m_name;
             std::string            m_type;
             std::list<std::string> m_requires;
@@ -54,7 +56,7 @@ namespace amqp::internal::schema {
             [[nodiscard]] const std::string & label() const;
             [[nodiscard]] const std::list<std::string> & requires() const;
 
-            [[nodiscard]] virtual bool primitive() const = 0;
+            [[nodiscard]] virtual Type AMQPType() const = 0;
             [[nodiscard]] virtual const std::string & fieldType() const = 0;
             [[nodiscard]] virtual const std::string & resolvedType() const = 0;
     };
