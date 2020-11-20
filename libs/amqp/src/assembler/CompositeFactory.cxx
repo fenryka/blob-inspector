@@ -171,6 +171,7 @@ CompositeFactory::processComposite (
                 break;
             }
             case schema::Field::Type::custom_t : {
+                // Deal with random Java types
                 break;
             }
             default : {
