@@ -64,6 +64,7 @@ Serializable::deserialise (
 ) {
     DBG (__FUNCTION__ << std::endl); // NOLINT
     blob_.startComposite();
+    DBG (__FUNCTION__ << "::DOME" << std::endl); // NOLINT
 }
 
 /******************************************************************************/

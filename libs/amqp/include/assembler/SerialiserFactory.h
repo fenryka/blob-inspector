@@ -64,11 +64,17 @@ namespace amqp::assembler {
                 }
             };
 
-            template<typename T,  bool = std::is_base_of_v<Serializable , std::remove_pointer_t<T>>, bool = std::is_pointer_v<T>>
+            template<typename T,  bool = std::is_base_of_v<Serializable , std::remove_pointer_t<T>>>
             struct PropertyReader {
-                static T read (const AMQPBlob & blob_, const SerialiserFactory & sf_
-                ) {
+                static T read (const AMQPBlob & blob_, const SerialiserFactory & sf_) {
                     return blob_.readPrimitive<T> ();
+                }
+            };
+
+            template<typename T>
+            struct PropertyReader<T, true> {
+                static T read (const AMQPBlob & blob_, const SerialiserFactory & sf_) {
+                    return blob_.readComposite<T> ();
                 }
             };
 
@@ -153,11 +159,17 @@ namespace amqp::assembler {
                 dynamic_cast<internal::ModifiableAMQPBlobImpl &>(blob_).endComposite (clazz_);
             }
 
-            static void startRestricted (const RestrictedSerializable & clazz_, ModifiableAMQPBlob & blob_)  {
+            static void startRestricted (
+                const RestrictedSerializable & clazz_,
+                ModifiableAMQPBlob & blob_
+            )  {
                 dynamic_cast<internal::ModifiableAMQPBlobImpl &>(blob_).startRestricted (clazz_);
             }
 
-            static void endRestricted (const RestrictedSerializable & clazz_, ModifiableAMQPBlob & blob_)  {
+            static void endRestricted (
+                const RestrictedSerializable & clazz_,
+                ModifiableAMQPBlob & blob_
+            )  {
                 dynamic_cast<internal::ModifiableAMQPBlobImpl &>(blob_).endRestricted (clazz_);
             }
 
@@ -172,27 +184,28 @@ namespace amqp::assembler {
             }
 
             template<typename T>
-            T read (
-                const AMQPBlob & blob_
-            ) const {
-                return PropertyReader<T>::read (blob_, *this);
-            }
-
-            template<typename T>
             void writeSingle (T propertyValue_, const Serializable & clazz_,
                 ModifiableAMQPBlob & blob_
             ) const {
                 SingleWriter<T>::write (propertyValue_, blob_, *this);
             }
 
+            template<typename T>
+            T
+            read (
+                const AMQPBlob & blob_
+            ) const {
+                DBG (__FUNCTION__ << std::endl); // NOLINT
+                return PropertyReader<T>::read (blob_, *this);
+            }
 
             template<typename T>
             T
             deserialise (const AMQPBlob & blob_) {
-                DBG (__FUNCTION__ << std::endl);
-                blob_.readyPayload();
+                DBG (__FUNCTION__ << std::endl); // NOLINT
+                blob_.readyPayload ();
                 T::deserialise (blob_);
-                return T (*this, blob_);
+                return T { *this, blob_ };
             }
     };
 

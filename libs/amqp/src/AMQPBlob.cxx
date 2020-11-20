@@ -223,7 +223,6 @@ namespace {
     IValPtr
     dumpDescribed (pn_data_t * data_) {
         DBG (__FUNCTION__  << std::endl); // NOLINT
-    //    proton::attest_is_described (data_, __FILE__, __LINE__);
 
         {
             proton::auto_enter p2(data_);
@@ -354,24 +353,16 @@ AMQPBlob::readyPayload () const {
     {
         proton::auto_enter an (m_data);
         DBG (__FUNCTION__ << "::" << m_data << " " << describedToString (pn_data_get_ulong (m_data))
-                          << std::endl); // NOLINT
+            << std::endl); // NOLINT
     }
-
-    /*
-    DBG (__FUNCTION__ << " " << describedToString (pn_data_get_ulong (m_data)) << std::endl);
-
-    proton::pn_data_enter (m_data);
-    proton::attest_is_list (m_data, __FILE__, __LINE__);
-
-    // first element in the list is the data (second the schema, third the transforms)
-    proton::auto_list_enter ale (m_data, true);
-    proton::attest_is_described (m_data, __FILE__, __LINE__);
-     */
 }
+
+/******************************************************************************/
 
 void
 amqp::
 AMQPBlob::startComposite () const {
+    DBG (__FUNCTION__ << std::endl); // NOLINT
     proton::attest_is_described (m_data, __FILE__, __LINE__);
     proton::pn_data_enter (m_data);
     uint64_t key = proton::readAndNext<u_long>(m_data, __FILE__, __LINE__);
@@ -382,17 +373,24 @@ AMQPBlob::startComposite () const {
     DBG (__FUNCTION__ << "::" << m_data << std::endl);
 }
 
+/******************************************************************************/
+
 void
 amqp::
-AMQPBlob::endComposite () {
-
+AMQPBlob::endComposite () const {
+    pn_data_exit (m_data);
+    pn_data_exit (m_data);
 }
+
+/******************************************************************************/
 
 void
 amqp::
 AMQPBlob::startRestricted (const amqp::serializable::RestrictedSerializable &) {
 
 }
+
+/******************************************************************************/
 
 void
 amqp::
