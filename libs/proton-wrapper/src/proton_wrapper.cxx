@@ -431,9 +431,8 @@ readAndNext<int32_t> (
     int line_,
     [[maybe_unused]] bool tolerateDeviance_
 ) {
-    int rtn = pn_data_get_int (data_);
-    pn_data_next(data_);
-    return rtn;
+    auto_next an (data_);
+    return pn_data_get_int (data_);
 }
 
 /******************************************************************************/
@@ -475,9 +474,8 @@ readAndNext<bool> (
     int line_,
     [[maybe_unused]] bool tolerateDeviance_
 ) {
-    bool rtn = pn_data_get_bool (data_);
-    pn_data_next(data_);
-    return rtn;
+    auto_next an (data_);
+    return pn_data_get_bool (data_);
 }
 
 /******************************************************************************/
@@ -506,9 +504,8 @@ readAndNext<long> (
     int line_,
     [[maybe_unused]] bool tolerateDeviance_
 ) {
-    long rtn = pn_data_get_long (data_);
-    pn_data_next (data_);
-    return rtn;
+    auto_next an (data_);
+    return pn_data_get_long (data_);
 }
 
 /******************************************************************************/
@@ -522,9 +519,8 @@ readAndNext<u_long > (
         int line_,
         [[maybe_unused]] bool tolerateDeviance_
 ) {
-    long rtn = pn_data_get_ulong (data_);
-    pn_data_next (data_);
-    return rtn;
+    auto_next an (data_);
+    return pn_data_get_ulong (data_);
 }
 
 /******************************************************************************/
@@ -538,12 +534,35 @@ readAndNext<char *> (
     int line_,
     bool tolerateDeviance_
 ) {
+    auto_next an (data_);
+
+    auto binary = pn_data_get_binary (data_);
+
+    auto rtn = new char[binary.size];
+    std::memcpy (rtn, binary.start, binary.size);
+
+    return rtn;
+}
+
+/******************************************************************************/
+
+template<>
+std::pair<size_t, char *>
+proton::
+readAndNext<std::pair<size_t, char *>> (
+        pn_data_t * data_,
+        const std::string & file_,
+        int line_,
+        bool tolerateDeviance_
+) {
+    auto_next an (data_);
+
     auto binary = pn_data_get_binary (data_);
 
     auto rtn = new char[binary.size];
     std::memcpy(rtn, binary.start, binary.size);
 
-    return rtn;
+    return std::make_pair(binary.size, rtn);
 }
 
 /******************************************************************************/

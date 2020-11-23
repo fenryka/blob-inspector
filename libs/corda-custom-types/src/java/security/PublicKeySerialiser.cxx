@@ -49,7 +49,7 @@ PublicKeySeraliser::dump (
     pn_data_t * data_,
     const amqp::schema::ISchema &
 ) const  {
-    DBG (__FUNCTION__ << std::endl);
+    DBG (__FUNCTION__ << std::endl); // NOLINT
     proton::auto_next an (data_);
 
     proton::attest_is_described (data_, __FILE__, __LINE__);
@@ -63,7 +63,7 @@ PublicKeySeraliser::dump (
 
         return std::make_unique<amqp::internal::serialiser::reader::TypedPair<std::string>> (
             name_,
-            "<<<binary>>>");
+            "<<<Public Key>>>");
     }
 }
 
