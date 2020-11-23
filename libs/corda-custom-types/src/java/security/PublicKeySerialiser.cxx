@@ -50,12 +50,21 @@ PublicKeySeraliser::dump (
     const amqp::schema::ISchema &
 ) const  {
     DBG (__FUNCTION__ << std::endl);
-    proton::attest_is_binary (data_, __FILE__, __LINE__);
-    auto  val = proton::readAndNext<char *> (data_, __FILE__, __LINE__);
+    proton::auto_next an (data_);
 
-    return std::make_unique<amqp::internal::serialiser::reader::TypedPair<std::string>> (
-        name_,
-        "<<<binary>>>");
+    proton::attest_is_described (data_, __FILE__, __LINE__);
+    {
+        proton::auto_enter ae (data_);
+        // skip the fingerprint / symbol
+        pn_data_next (data_);
+
+        proton::attest_is_binary (data_, __FILE__, __LINE__);
+        auto val = proton::readAndNext<char *> (data_, __FILE__, __LINE__);
+
+        return std::make_unique<amqp::internal::serialiser::reader::TypedPair<std::string>> (
+            name_,
+            "<<<binary>>>");
+    }
 }
 
 std::unique_ptr<amqp::serialiser::reader::IValue>
@@ -73,5 +82,5 @@ PublicKeySeraliser::dump (
 void
 java::security::
 PublicKeySeraliser::write (std::any, pn_data_t *) const  {
-
+    throw std::runtime_error ("NOT IMPLEMENTED");
 }
