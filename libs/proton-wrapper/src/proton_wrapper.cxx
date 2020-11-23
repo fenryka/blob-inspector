@@ -514,3 +514,22 @@ readAndNext<u_long > (
 }
 
 /******************************************************************************/
+
+template<>
+char *
+proton::
+readAndNext<char *> (
+    pn_data_t * data_,
+    const std::string & file_,
+    int line_,
+    bool tolerateDeviance_
+) {
+    auto binary = pn_data_get_binary (data_);
+
+    auto rtn = new char[binary.size];
+    std::memcpy(rtn, binary.start, binary.size);
+
+    return rtn;
+}
+
+/******************************************************************************/

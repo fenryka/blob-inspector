@@ -4,6 +4,10 @@
 #include <string>
 #include <proton/codec.h>
 
+#include "proton-wrapper/include/proton_wrapper.h"
+#include "amqp/include/serialiser/reader/IReader.h"
+#include "amqp/src/serialiser/serialisers/reader/Reader.h"
+
 const std::string
 java::security::PublicKeySeraliser::m_name {
    "Public Key serialiser"
@@ -41,11 +45,16 @@ PublicKeySeraliser::readString (pn_data_t *) const  {
 std::unique_ptr<amqp::serialiser::reader::IValue>
 java::security::
 PublicKeySeraliser::dump (
-    const std::string &,
-    pn_data_t *,
+    const std::string & name_,
+    pn_data_t * data_,
     const amqp::schema::ISchema &
 ) const  {
+    DBG (__FUNCTION__ << std::endl);
+    auto  val = proton::readAndNext<char *> (data_, __FILE__, __LINE__);
 
+    return std::make_unique<amqp::internal::serialiser::reader::TypedPair<std::string>> (
+        name_,
+        "<<<binary>>>");
 }
 
 std::unique_ptr<amqp::serialiser::reader::IValue>
