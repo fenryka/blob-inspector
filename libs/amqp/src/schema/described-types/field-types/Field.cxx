@@ -139,7 +139,8 @@ Field::typeIsPrimitive (const std::string & type_) {
             type_ == "bool" ||
             type_ == "float" ||
             type_ == "int" ||
-            type_ == "double");
+            type_ == "double" ||
+            type_ == "binary");
 }
 
 /******************************************************************************/

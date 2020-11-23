@@ -2,7 +2,7 @@
 
 #include <iosfwd>
 
-#include "AMQPTypeNotation.h"
+#include "amqp/src/schema/AMQPTypeNotation.h"
 
 /******************************************************************************/
 

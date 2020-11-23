@@ -7,9 +7,9 @@
 #include <iosfwd>
 #include <string>
 
-#include "described-types/Choice.h"
-#include "described-types/Descriptor.h"
-#include "AMQPTypeNotation.h"
+#include "amqp/src/schema/described-types/Choice.h"
+#include "amqp/src/schema/described-types/Descriptor.h"
+#include "amqp/src/schema/AMQPTypeNotation.h"
 
 /******************************************************************************
  *

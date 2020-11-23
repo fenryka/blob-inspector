@@ -1,4 +1,4 @@
-# Make it OK to convert relatvie paths when adding interface sources to targets
+# Make it OK to convert relative paths when adding interface sources to targets
 CMAKE_POLICY (SET CMP0076 NEW)
 
 set (libName amqp)

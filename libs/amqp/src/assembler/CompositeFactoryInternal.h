@@ -9,7 +9,7 @@
 
 #include "corda-utils/include/types.h"
 
-#include "amqp/include/assembler/ICompositeFactory.h"
+#include "amqp/include/assembler/CompositeFactory.h"
 #include "amqp/include/serialiser/ISerialiser.h"
 
 #include "amqp/src/serialiser/serialisers/reader/CompositeReader.h"
@@ -26,13 +26,13 @@
 
 namespace amqp::internal::assembler {
 
-    class CompositeFactory : public ICompositeFactory {
+    class CompositeFactoryInternal : public CompositeFactory {
         private :
             spStrMap_t<amqp::serialiser::ISerialiser> m_serialisersByType;
             spStrMap_t<amqp::serialiser::ISerialiser> m_serialisersByDescriptor;
 
         public :
-            CompositeFactory() = default;
+            CompositeFactoryInternal() = default;
 
             void process (const amqp::schema::ISchema &) override;
 
@@ -41,6 +41,8 @@ namespace amqp::internal::assembler {
 
             sPtr<amqp::serialiser::ISerialiser> byDescriptor (
                     const std::string &) override;
+
+            void installCustomSerialiser (sPtr<amqp::serialiser::ISerialiser>) override;
 
         private :
             sPtr<amqp::serialiser::ISerialiser> process (

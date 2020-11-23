@@ -1,3 +1,4 @@
 TARGET_SOURCES(${libName}
         PRIVATE
-            PublicKey.cxx)
+            PublicKey.cxx
+            PublicKeySerialiser.cxx)

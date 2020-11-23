@@ -16,6 +16,7 @@ struct pn_data_t;
 namespace amqp {
 
     class CordaBytes;
+    class CompositeFactory;
 
 }
 
@@ -23,12 +24,6 @@ namespace amqp::serializable {
 
     class Serializable;
     class RestrictedSerializable;
-
-}
-
-/******************************************************************************/
-
-namespace {
 
 }
 
@@ -80,7 +75,7 @@ namespace amqp {
             explicit AMQPBlob (CordaBytes &);
             explicit AMQPBlob (pn_data_t *);
 
-            [[nodiscard]] std::string dumpContents() const;
+            [[nodiscard]] std::string dumpContents (amqp::CompositeFactory &) const;
             [[nodiscard]] std::string dumpSchema (schema::DumpTarget) const;
             [[nodiscard]] std::string dumpData () const;
 

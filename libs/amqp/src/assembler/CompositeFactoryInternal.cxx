@@ -1,4 +1,4 @@
-#include "CompositeFactory.h"
+#include "CompositeFactoryInternal.h"
 
 #include <vector>
 #include <sstream>
@@ -81,7 +81,7 @@ namespace {
 
 /******************************************************************************
  *
- *  CompositeFactory
+ *  CompositeFactoryInternal
  *
  ******************************************************************************/
 
@@ -97,7 +97,7 @@ namespace {
  */
 void
 amqp::internal::assembler::
-CompositeFactory::process (const amqp::schema::ISchema & schema_) {
+CompositeFactoryInternal::process (const amqp::schema::ISchema & schema_) {
     DBG ("process schema" << std::endl); // NOLINT
 
     for (const auto & i : dynamic_cast<const schema::Schema &>(schema_)) {
@@ -112,7 +112,7 @@ CompositeFactory::process (const amqp::schema::ISchema & schema_) {
 
 sPtr<amqp::serialiser::ISerialiser>
 amqp::internal::assembler::
-CompositeFactory::process (
+CompositeFactoryInternal::process (
     const amqp::internal::schema::AMQPTypeNotation & schema_)
 {
     DBG ("process::" << schema_.name() << std::endl); // NOLINT
@@ -136,7 +136,7 @@ CompositeFactory::process (
 
 sPtr<amqp::serialiser::ISerialiser>
 amqp::internal::assembler::
-CompositeFactory::processComposite (
+CompositeFactoryInternal::processComposite (
         const amqp::internal::schema::AMQPTypeNotation & type_
 ) {
     DBG ("processComposite - " << type_.name() << std::endl); // NOLINT
@@ -172,6 +172,8 @@ CompositeFactory::processComposite (
             }
             case schema::Field::Type::custom_t : {
                 // Deal with random Java types
+                std::cout << field->resolvedType() << std::endl;
+                serialiser = m_serialisersByType[field->resolvedType()];
                 break;
             }
             default : {
@@ -210,7 +212,7 @@ CompositeFactory::processComposite (
 
 sPtr<amqp::serialiser::ISerialiser>
 amqp::internal::assembler::
-CompositeFactory::processEnum (
+CompositeFactoryInternal::processEnum (
     const amqp::internal::schema::Enum & enum_
 ) {
     DBG ("Processing Enum - " << enum_.name() << std::endl); // NOLINT
@@ -226,7 +228,7 @@ CompositeFactory::processEnum (
 
 sPtr<amqp::serialiser::ISerialiser>
 amqp::internal::assembler::
-CompositeFactory::fetchReaderForRestricted (const std::string & type_) {
+CompositeFactoryInternal::fetchReaderForRestricted (const std::string & type_) {
     decltype(m_serialisersByType)::mapped_type rtn;
 
     DBG ("fetchReaderForRestricted - " << type_ << std::endl); // NOLINT
@@ -254,7 +256,7 @@ CompositeFactory::fetchReaderForRestricted (const std::string & type_) {
 
 sPtr<amqp::serialiser::ISerialiser>
 amqp::internal::assembler::
-CompositeFactory::processMap (
+CompositeFactoryInternal::processMap (
     const amqp::internal::schema::Map & map_
 ) {
     DBG ("Processing Map - "
@@ -275,7 +277,7 @@ CompositeFactory::processMap (
 
 sPtr<amqp::serialiser::ISerialiser>
 amqp::internal::assembler::
-CompositeFactory::processList (
+CompositeFactoryInternal::processList (
     const amqp::internal::schema::List & list_
 ) {
     DBG ("Processing List - " << list_.listOf() << std::endl); // NOLINT
@@ -291,7 +293,7 @@ CompositeFactory::processList (
 
 sPtr<amqp::serialiser::ISerialiser>
 amqp::internal::assembler::
-CompositeFactory::processArray (
+CompositeFactoryInternal::processArray (
         const amqp::internal::schema::Array & array_
 ) {
     DBG ("Processing Array - " << array_.name() << " " << array_.arrayOf() << std::endl); // NOLINT
@@ -307,7 +309,7 @@ CompositeFactory::processArray (
 
 sPtr<amqp::serialiser::ISerialiser>
 amqp::internal::assembler::
-CompositeFactory::processRestricted (
+CompositeFactoryInternal::processRestricted (
         const amqp::internal::schema::AMQPTypeNotation & type_)
 {
     DBG ("processRestricted - " << type_.name() << std::endl); // NOLINT
@@ -342,7 +344,7 @@ CompositeFactory::processRestricted (
 
 sPtr<amqp::serialiser::ISerialiser>
 amqp::internal::assembler::
-CompositeFactory::byType (const std::string & type_) {
+CompositeFactoryInternal::byType (const std::string & type_) {
     auto it = m_serialisersByType.find (type_);
 
     return (it == m_serialisersByType.end()) ? nullptr : it->second;
@@ -352,10 +354,22 @@ CompositeFactory::byType (const std::string & type_) {
 
 sPtr<amqp::serialiser::ISerialiser>
 amqp::internal::assembler::
-CompositeFactory::byDescriptor (const std::string & descriptor_) {
+CompositeFactoryInternal::byDescriptor (const std::string & descriptor_) {
     auto it = m_serialisersByDescriptor.find (descriptor_);
 
     return (it == m_serialisersByDescriptor.end()) ? nullptr : it->second;
+}
+
+/******************************************************************************/
+
+void
+amqp::internal::assembler::
+CompositeFactoryInternal::installCustomSerialiser (
+    sPtr<amqp::serialiser::ISerialiser> serialiser_
+) {
+    DBG (__FUNCTION__ << "::" << serialiser_->name() << "::" << serialiser_->type() << std::endl);
+    m_serialisersByType[serialiser_->type()] = serialiser_;
+//    m_serialisersByDescriptor[serialiser_->de
 }
 
 /******************************************************************************/

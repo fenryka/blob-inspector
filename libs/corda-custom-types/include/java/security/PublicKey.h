@@ -7,9 +7,7 @@ namespace java::security {
             char * m_bytes;
 
         public :
-            PublicKey()
-
-
+            PublicKey();
     };
 
 }

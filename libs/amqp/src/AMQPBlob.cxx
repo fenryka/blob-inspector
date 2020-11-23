@@ -3,14 +3,16 @@
 
 #include "AMQPBlob.h"
 
+#include "amqp/include/CordaBytes.h"
+#include "amqp/include/assembler/CompositeFactory.h"
+
 #include "amqp/src/schema/described-types/Envelope.h"
 #include "amqp/src/schema/descriptors/Descriptors.h"
 #include "amqp/src/schema/descriptors/AMQPDescriptorRegistory.h"
-#include "amqp/src/assembler/CompositeFactory.h"
+#include "amqp/src/assembler/CompositeFactoryInternal.h"
 
 #include "proton-wrapper/include/proton_wrapper.h"
 
-#include "amqp/include/CordaBytes.h"
 
 /******************************************************************************/
 
@@ -284,7 +286,7 @@ AMQPBlob::dumpData() const -> std::string {
  */
 std::string
 amqp::
-AMQPBlob::dumpContents() const {
+AMQPBlob::dumpContents (amqp::CompositeFactory & cf_) const {
     std::unique_ptr<internal::schema::Envelope> envelope;
 
     if (pn_data_is_described (m_data)) {
@@ -297,11 +299,9 @@ AMQPBlob::dumpContents() const {
                 internal::AMQPDescriptorRegistory[a]->build(m_data).release()));
     }
 
-    auto cf = internal::assembler::CompositeFactory();
+    cf_.process (envelope->schema());
 
-    cf.process (envelope->schema());
-
-    auto reader = cf.byDescriptor (envelope->descriptor());
+    auto reader = cf_.byDescriptor (envelope->descriptor());
     assert (reader);
 
     {

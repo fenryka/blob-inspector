@@ -1,3 +1,4 @@
 TARGET_SOURCES(${libName}
         PUBLIC
-            PublicKey.h)
+            PublicKey.h
+            PublicKeySerialiser.h)

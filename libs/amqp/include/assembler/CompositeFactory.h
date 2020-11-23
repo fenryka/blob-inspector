@@ -17,11 +17,11 @@ namespace amqp::schema {
 
 namespace amqp {
 
-    class ICompositeFactory {
+    class CompositeFactory {
         public :
-            ICompositeFactory() = default;
+            CompositeFactory() = default;
 
-            virtual ~ICompositeFactory() = default;
+            virtual ~CompositeFactory() = default;
 
             virtual void process (const schema::ISchema &) = 0;
 
@@ -30,6 +30,8 @@ namespace amqp {
 
             virtual sPtr<serialiser::ISerialiser> byDescriptor (
                     const std::string &) = 0;
+
+            virtual void installCustomSerialiser (sPtr<amqp::serialiser::ISerialiser>) = 0;
     };
 
 }

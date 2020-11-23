@@ -2,18 +2,20 @@
 
 /******************************************************************************/
 
-#include "Serialiser.h"
+#include <string>
 
 /******************************************************************************/
 
 namespace amqp::internal::serialiser::serialisers {
 
-    template <class Reader, class Writer>
-    class PropertySerialiser : public Serialiser<Reader, Writer> {
+    /**
+     * Allows us to define our static consts outside a header file since
+     * [BinaryPropertySerialiser] is a templated class
+     */
+    class BinaryPropertySerialiserBase {
         public :
-            [[nodiscard]] const std::string & name() const override = 0;
-
-            [[nodiscard]] const std::string & type() const override = 0;
+            static const std::string m_name;
+            static const std::string m_type;
     };
 
 }

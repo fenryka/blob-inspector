@@ -1,6 +1,6 @@
 #pragma once
 
-#include <amqp/src/ModifiableAMQPBlobImpl.h>
+#include "amqp/src/ModifiableAMQPBlobImpl.h"
 #include "amqp/src/serialiser/serialisers/reader/CompositeReader.h"
 #include "amqp/src/serialiser/serialisers/writer/Writer.h"
 #include "amqp/include/assembler/SerialiserFactory.h"
