@@ -25,6 +25,7 @@ namespace proton {
      */
     bool pn_data_enter(pn_data_t *);
 
+    void attest_is_binary (pn_data_t *, const std::string &, int);
     void attest_is_int (pn_data_t *, const std::string &, int);
     void attest_is_list (pn_data_t *, const std::string &, int);
     void attest_is_string(pn_data_t *, const std::string &, int, bool = false);

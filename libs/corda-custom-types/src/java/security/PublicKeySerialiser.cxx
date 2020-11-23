@@ -50,6 +50,7 @@ PublicKeySeraliser::dump (
     const amqp::schema::ISchema &
 ) const  {
     DBG (__FUNCTION__ << std::endl);
+    proton::attest_is_binary (data_, __FILE__, __LINE__);
     auto  val = proton::readAndNext<char *> (data_, __FILE__, __LINE__);
 
     return std::make_unique<amqp::internal::serialiser::reader::TypedPair<std::string>> (
