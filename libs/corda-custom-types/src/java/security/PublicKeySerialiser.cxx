@@ -8,6 +8,8 @@
 #include "amqp/include/serialiser/reader/IReader.h"
 #include "amqp/src/serialiser/serialisers/reader/Reader.h"
 
+/******************************************************************************/
+
 const std::string
 java::security::PublicKeySeraliser::m_name {
    "Public Key serialiser"
@@ -18,11 +20,15 @@ java::security::PublicKeySeraliser::m_type {
     "java.security.PublicKey"
 };
 
+/******************************************************************************/
+
 const std::string &
 java::security::
 PublicKeySeraliser::name() const {
     return m_name;
 }
+
+/******************************************************************************/
 
 const std::string &
 java::security::
@@ -30,17 +36,23 @@ PublicKeySeraliser::type() const  {
     return m_type;
 }
 
+/******************************************************************************/
+
 std::any
 java::security::
 PublicKeySeraliser::read (pn_data_t *) const  {
 
 }
 
+/******************************************************************************/
+
 std::string
 java::security::
 PublicKeySeraliser::readString (pn_data_t *) const  {
 
 }
+
+/******************************************************************************/
 
 std::unique_ptr<amqp::serialiser::reader::IValue>
 java::security::
@@ -67,6 +79,8 @@ PublicKeySeraliser::dump (
     }
 }
 
+/******************************************************************************/
+
 std::unique_ptr<amqp::serialiser::reader::IValue>
 java::security::
 PublicKeySeraliser::dump (
@@ -76,6 +90,8 @@ PublicKeySeraliser::dump (
 
 }
 
+/******************************************************************************/
+
 /*
  * Redeclare the IWriter interface
  */
@@ -84,3 +100,5 @@ java::security::
 PublicKeySeraliser::write (std::any, pn_data_t *) const  {
     throw std::runtime_error ("NOT IMPLEMENTED");
 }
+
+/******************************************************************************/
