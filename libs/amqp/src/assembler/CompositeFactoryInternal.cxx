@@ -172,7 +172,6 @@ CompositeFactoryInternal::processComposite (
             }
             case schema::Field::Type::custom_t : {
                 // Deal with random Java types
-                std::cout << field->resolvedType() << std::endl;
                 serialiser = m_serialisersByType[field->resolvedType()];
                 break;
             }

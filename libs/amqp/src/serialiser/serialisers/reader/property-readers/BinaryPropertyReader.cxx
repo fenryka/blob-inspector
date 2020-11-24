@@ -2,6 +2,8 @@
 
 #include "proton-wrapper/include/proton_wrapper.h"
 
+#include <sstream>
+
 /******************************************************************************
  *
  * BinaryPropertyReader
@@ -31,9 +33,14 @@ BinaryPropertyReader::dump (
         pn_data_t * data_,
         const amqp::schema::ISchema & schema_) const
 {
+    auto val = proton::readAndNext<std::pair<size_t, char *>>(data_, __FILE__, __LINE__);
+
+    std::stringstream ss;
+    ss << "<<<binary: " << std::to_string (val.first) << " bytes>>>";
+
     return std::make_unique<TypedPair<std::string>> (
             name_,
-            std::to_string (proton::readAndNext<bool> (data_, __FILE__, __LINE__)));
+            ss.str());
 }
 
 /******************************************************************************/
@@ -44,8 +51,13 @@ BinaryPropertyReader::dump (
         pn_data_t * data_,
         const amqp::schema::ISchema & schema_) const
 {
+    auto val = proton::readAndNext<std::pair<size_t, char *>>(data_, __FILE__, __LINE__);
+
+    std::stringstream ss;
+    ss << "<<<binary: " << std::to_string (val.first) << " bytes>>>";
+
     return std::make_unique<TypedSingle<std::string>> (
-            std::to_string (proton::readAndNext<bool> (data_, __FILE__, __LINE__)));
+            ss.str());
 }
 
 /******************************************************************************/
