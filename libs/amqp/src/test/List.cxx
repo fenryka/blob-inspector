@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
-#include "SchemaUtils.h"
 
-#include "restricted-types/List.h"
-#include "restricted-types/Restricted.h"
+#include "SchemaUtils.h"
 #include "TestUtils.h"
 
 /******************************************************************************/

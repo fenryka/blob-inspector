@@ -368,7 +368,6 @@ CompositeFactoryInternal::installCustomSerialiser (
 ) {
     DBG (__FUNCTION__ << "::" << serialiser_->name() << "::" << serialiser_->type() << std::endl);
     m_serialisersByType[serialiser_->type()] = serialiser_;
-//    m_serialisersByDescriptor[serialiser_->de
 }
 
 /******************************************************************************/

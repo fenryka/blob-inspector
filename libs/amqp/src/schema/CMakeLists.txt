@@ -4,7 +4,7 @@ target_sources(${libName}
             Descriptors.cxx
             SchemaUtils.cxx
         PUBLIC
-            SchemaUtils.h
+        SchemaUtils.h
             OrderedTypeNotations.h
             AMQPTypeNotation.h
 )

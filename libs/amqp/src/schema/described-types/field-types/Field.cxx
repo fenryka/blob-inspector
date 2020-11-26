@@ -68,26 +68,28 @@ Field::make (
         DBG ("-> restricted" << name_ << std::endl); // NOLINT
         if (amqp::internal::schema::types::isContainer (name_)) {
             return std::make_unique<RestrictedField>(
-                    std::move(name_),
-                    std::move(type_),
-                    std::move(requires_),
-                    std::move(default_),
-                    std::move(label_),
+                    std::move (name_),
+                    std::move (type_),
+                    std::move (requires_),
+                    std::move (default_),
+                    std::move (label_),
                     mandatory_,
                     multiple_);
         } else {
             // Likely to be an internal Java composite type we'll need a
             // custom / plugin serialiser
             return std::make_unique<CustomField>(
-                    std::move(name_),
-                    std::move(type_),
-                    std::move(requires_),
-                    std::move(default_),
-                    std::move(label_),
+                    std::move (name_),
+                    std::move (type_),
+                    std::move (requires_),
+                    std::move (default_),
+                    std::move (label_),
                     mandatory_,
                     multiple_);
         }
     } else {
+        auto name = types::listType (type_);
+
         DBG ("-> composite" << std::endl); // NOLINT
         return std::make_unique<CompositeField>(
                 std::move (name_),
@@ -132,7 +134,7 @@ Field::Field (
 bool
 amqp::internal::schema::
 Field::typeIsPrimitive (const std::string & type_) {
-    DBG (__FUNCTION__ << "::" << type_ << std::endl);
+    DBG (__FUNCTION__ << " - " << type_ << std::endl);
     return (type_ == "string" ||
             type_ == "long" ||
             type_ == "boolean" ||

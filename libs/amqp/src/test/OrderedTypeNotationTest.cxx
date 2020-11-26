@@ -17,7 +17,7 @@ namespace {
             { }
 
 
-            int dependsOn (const OrderedTypeNotation & otn_) const override {
+            [[nodiscard]] int dependsOn (const OrderedTypeNotation & otn_) const override {
                 const auto & otn = dynamic_cast<const OTN &>(otn_);
 
                 // does the "left hand side" depend on us (in this case
@@ -43,13 +43,13 @@ namespace {
                 return 0;
             }
 
-            const std::string & name() const { return m_name; }
+            [[nodiscard]] const std::string & name() const { return m_name; }
 
-            decltype(m_dependsOn.cbegin()) begin() const {
+            [[nodiscard]] decltype(m_dependsOn.cbegin()) begin() const {
                 return m_dependsOn.cbegin();
             }
 
-            decltype(m_dependsOn.cend()) end() const {
+            [[nodiscard]] decltype(m_dependsOn.cend()) end() const {
                 return m_dependsOn.cend();
             }
     };
