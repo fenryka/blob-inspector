@@ -159,6 +159,7 @@ OrderedTypeNotations<T>::insert (
 
     for (auto i = l_ ; i != m_schemas.end() ; ++i) {
         for (const auto & j : *i) {
+            DBG (j->name() << std::endl);
             /*
              * A score of 0 means no dependencies at all
              * A score of 1 means "j" has a dependency on what's being inserted

@@ -69,6 +69,7 @@ List::listOf() const {
 int
 amqp::internal::schema::
 List::dependsOnMap (const amqp::internal::schema::Map & map_) const {
+    DBG ("List::dependsOnMap - " << name() << " map:" << map_.name() << std::endl);
     // do we depend on the lhs
     if (listOf() == map_.name()) {
         return 1;

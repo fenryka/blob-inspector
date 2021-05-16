@@ -65,8 +65,21 @@ Field::make (
                 multiple_);
 
     } else if (type_ == "*") {
-        DBG ("-> restricted" << name_ << std::endl); // NOLINT
-        if (amqp::internal::schema::types::isContainer (name_)) {
+        DBG ("-> restricted " << name_ << std::endl); // NOLINT
+        if (requires_.empty()) {
+            // Likely to be an internal Java composite type we'll need a
+            // custom / plugin serialiser
+            return std::make_unique<CustomField>(
+                std::move (name_),
+                std::move (type_),
+                std::move (requires_),
+                std::move (default_),
+                std::move (label_),
+                mandatory_,
+                multiple_);
+        }
+        else if (amqp::internal::schema::types::isContainer (requires_.front())) {
+            DBG (name_ << " is a container" << std::endl);
             return std::make_unique<RestrictedField>(
                     std::move (name_),
                     std::move (type_),
@@ -76,16 +89,7 @@ Field::make (
                     mandatory_,
                     multiple_);
         } else {
-            // Likely to be an internal Java composite type we'll need a
-            // custom / plugin serialiser
-            return std::make_unique<CustomField>(
-                    std::move (name_),
-                    std::move (type_),
-                    std::move (requires_),
-                    std::move (default_),
-                    std::move (label_),
-                    mandatory_,
-                    multiple_);
+            throw std::runtime_error ("THIS IS BAD");
         }
     } else {
         auto name = types::listType (type_);

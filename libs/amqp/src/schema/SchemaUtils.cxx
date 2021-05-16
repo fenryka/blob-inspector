@@ -1,6 +1,7 @@
 #include "SchemaUtils.h"
 
 #include <map>
+#include <vector>
 
 /******************************************************************************/
 
@@ -47,7 +48,6 @@ unbox (const std::string & type_) {
     auto it = boxedToUnboxed.find (type_);
     if (it == boxedToUnboxed.end()) return type_;
     else return it->second;
-
 }
 
 /******************************************************************************/
@@ -92,14 +92,32 @@ mapType (const std::string & map_) {
 
 /******************************************************************************/
 
+void
+amqp::internal::schema::types::
+nestedGenericTypes (const std::string & type_, std::vector<std::string> & v_) {
+    v_.push_back (type_);
+
+    if (isList (type_)) {
+        auto v = listType (type_);
+
+        nestedGenericTypes (v.second, v_);
+    } else if (isMap (type_)) {
+        auto v = mapType (type_);
+
+        nestedGenericTypes (std::get<1> (v), v_);
+        nestedGenericTypes (std::get<2> (v), v_);
+    }
+}
+
+/******************************************************************************/
+
 bool
 amqp::internal::schema::types::
 isContainer (const std::string & type_) {
     // when C++20 is done we can use .endswith, until then we have to do a reverse search
-    return (   std::equal (type_.rbegin(), type_.rbegin() + array.size(), array.rbegin(), array.rend())
-            || std::equal (type_.rbegin(), type_.rbegin() + primArray.size(), primArray.rbegin(), primArray.rend())
-            || type_.find ("java.util.List") == 0
-            || type_.find ("java.util.Map") == 0);
+    return (   isArray (type_)
+            || isList (type_)
+            || isMap (type_));
 }
 
 /******************************************************************************/
@@ -114,6 +132,22 @@ isArray (const std::string & type_) {
     // when C++20 is done we can use .endswith, until then we have to do a reverse search
     return (   std::equal (type_.rbegin(), type_.rbegin() + array.size(), array.rbegin(), array.rend())
             || std::equal (type_.rbegin(), type_.rbegin() + primArray.size(), primArray.rbegin(), primArray.rend()));
+}
+
+/******************************************************************************/
+
+bool
+amqp::internal::schema::types::
+isList (const std::string & type_) {
+    return type_.find ("java.util.List") == 0;
+}
+
+/******************************************************************************/
+
+bool
+amqp::internal::schema::types::
+isMap (const std::string & type_) {
+    return type_.find ("java.util.Map") == 0;
 }
 
 /******************************************************************************/

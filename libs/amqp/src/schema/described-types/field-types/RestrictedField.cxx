@@ -1,3 +1,5 @@
+#include <include/debug.h>
+#include "src/schema/SchemaUtils.h"
 #include "RestrictedField.h"
 
 /******************************************************************************/
@@ -19,14 +21,19 @@ RestrictedField::RestrictedField (
     bool mandatory_,
     bool multiple_
 ) : Field (
-        std::move (name_),
-        std::move (type_),
-        std::move (requires_),
-        std::move (default_),
-        std::move (label_),
-        mandatory_,
-        multiple_)
+    std::move (name_),
+    std::move (type_),
+    std::move (requires_),
+    std::move (default_),
+    std::move (label_),
+    mandatory_,
+    multiple_)
 {
+    DBG ("RestrictedField - " << name() << "::" << type() << std::endl);
+
+    for (const auto & r : requires()) {
+        schema::types::nestedGenericTypes (r, m_subTypes);
+    }
 }
 
 /******************************************************************************/
@@ -51,6 +58,14 @@ const std::string &
 amqp::internal::schema::
 RestrictedField::resolvedType() const {
     return requires().front();
+}
+
+/******************************************************************************/
+
+const sVec<std::string> &
+amqp::internal::schema::
+RestrictedField::subTypes() const {
+    return m_subTypes;
 }
 
 /******************************************************************************/

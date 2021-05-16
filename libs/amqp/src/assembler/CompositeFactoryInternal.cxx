@@ -154,7 +154,7 @@ CompositeFactoryInternal::processComposite (
 
     for (const auto & field : fields) {
         DBG ("  Field: " << field->name() << ": \"" << field->type()
-            << "\" {" << field->resolvedType() << "} "
+            << "\" {" << field->resolvedType()[0] << "} "
             << field->fieldType() << std::endl); // NOLINT
 
         decltype (m_serialisersByType)::mapped_type serialiser;
@@ -195,7 +195,7 @@ CompositeFactoryInternal::processComposite (
             ss << __FILE__ << "::"
                 << __FUNCTION__ << "::"
                 << __LINE__ << ":: "
-                << "Can't find " << field->resolvedType();
+                << "Can't find " << field->resolvedType()[0];
 
             throw std::runtime_error (ss.str());
         }
@@ -245,7 +245,12 @@ CompositeFactoryInternal::fetchReaderForRestricted (const std::string & type_) {
     }
 
     if (!rtn) {
-        throw std::runtime_error ("Missing type in map");
+        std::stringstream ss;
+        ss << __FILE__ << "::"
+           << __FUNCTION__ << "::"
+           << __LINE__ << ":: "
+           << "Missing type in serialisers map: " << type_;
+        throw std::runtime_error (ss.str());
     }
 
     return rtn;
